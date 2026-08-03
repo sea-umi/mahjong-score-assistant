@@ -60,8 +60,14 @@ function picker(target) {
 
 function statusPanel() {
   const situationNames = ['リーチ', 'ダブルリーチ', '一発', '嶺上開花', '槍槓', '海底摸月', '河底撈魚'];
+  const honbaOptions = Array.from({ length: 21 }, (_, value) => `<option value="${value}" ${state.honba === value ? 'selected' : ''}>${value}本</option>`).join('');
+  const hanOptions = Array.from({ length: 13 }, (_, index) => {
+    const han = index + 1;
+    const label = han === 13 ? '13翻以上（数え役満）' : `${han}翻`;
+    return `<option value="${han}" ${state.manualHan === han ? 'selected' : ''}>${label}</option>`;
+  }).join('');
   const quickFields = state.scoreMode === 'quick'
-    ? `<label>合計翻数<input data-field="manualHan" type="number" min="1" max="99" value="${state.manualHan}"></label>`
+    ? `<label>合計翻数<select data-field="manualHan">${hanOptions}</select></label>`
     : '';
   return `<aside class="context-panel">
     <h2>計算の状況</h2>
@@ -69,7 +75,7 @@ function statusPanel() {
       <label>計算方法<select data-field="scoreMode"><option value="quick" ${state.scoreMode === 'quick' ? 'selected' : ''}>翻数を自分で入力</option><option value="auto" ${state.scoreMode === 'auto' ? 'selected' : ''}>役・翻数を自動判定</option></select></label>
       <label>和了<select data-field="winMethod"><option value="ron" ${state.winMethod === 'ron' ? 'selected' : ''}>ロン</option><option value="tsumo" ${state.winMethod === 'tsumo' ? 'selected' : ''}>ツモ</option></select></label>
       <label>立場<select data-field="isDealer"><option value="false" ${!state.isDealer ? 'selected' : ''}>子</option><option value="true" ${state.isDealer ? 'selected' : ''}>親</option></select></label>
-      <label>本場<input data-field="honba" type="number" value="${state.honba}" min="0" max="99"></label>
+      <label>本場<select data-field="honba">${honbaOptions}</select></label>
       <label>場風<select data-field="roundWind">${[['east', '東場'], ['south', '南場'], ['west', '西場'], ['north', '北場']].map(([value, label]) => `<option value="${value}" ${state.roundWind === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
       <label>自風<select data-field="seatWind">${[['east', '東家'], ['south', '南家'], ['west', '西家'], ['north', '北家']].map(([value, label]) => `<option value="${value}" ${state.seatWind === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
       ${quickFields}
@@ -161,12 +167,6 @@ function resetHand() {
 }
 
 function bind() {
-  // 数字入力中に画面全体を描き直すとフォーカスが外れるため、値だけを保存する。
-  document.querySelectorAll('[data-field="manualHan"], [data-field="honba"]').forEach((element) => element.addEventListener('input', () => {
-    if (element.dataset.field === 'manualHan') state.manualHan = Number(element.value);
-    if (element.dataset.field === 'honba') state.honba = Number(element.value);
-    state.result = null;
-  }));
   document.querySelectorAll('[data-field]').forEach((element) => element.addEventListener('change', () => {
     const { field, value } = element.dataset.field ? { field: element.dataset.field, value: element.value } : {};
     if (field === 'scoreMode') {
@@ -179,9 +179,7 @@ function bind() {
     if (field === 'manualHan') state.manualHan = Number(value);
     if (field === 'roundWind') state.roundWind = value;
     if (field === 'seatWind') state.seatWind = value;
-    state.result = null; state.error = '';
-    // 数値入力は入力中のフォーカスを守るため、ここでは再描画しない。
-    if (field !== 'manualHan' && field !== 'honba') render();
+    state.result = null; state.error = ''; render();
   }));
   document.querySelectorAll('[data-situation]').forEach((element) => element.addEventListener('change', () => {
     element.checked ? state.situations.add(element.dataset.situation) : state.situations.delete(element.dataset.situation);
