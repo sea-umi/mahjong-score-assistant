@@ -60,7 +60,7 @@ function picker(target) {
 
 function statusPanel() {
   const situationNames = ['リーチ', 'ダブルリーチ', '一発', '嶺上開花', '槍槓', '海底摸月', '河底撈魚'];
-  const honbaOptions = Array.from({ length: 21 }, (_, value) => `<option value="${value}" ${state.honba === value ? 'selected' : ''}>${value}本</option>`).join('');
+  const honbaOptions = Array.from({ length: 11 }, (_, value) => `<option value="${value}" ${state.honba === value ? 'selected' : ''}>${value}本</option>`).join('');
   const hanOptions = Array.from({ length: 13 }, (_, index) => {
     const han = index + 1;
     const label = han === 13 ? '13翻以上（数え役満）' : `${han}翻`;
