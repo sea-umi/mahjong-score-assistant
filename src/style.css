@@ -24,3 +24,41 @@ main { width: min(1120px, calc(100% - 32px)); margin: 26px auto 70px; }.hero { b
 @media (max-width:720px) { .entry-block, .indicator-card { padding:16px; }.indicator-row { grid-template-columns:1fr; }.entry-block .tile-picker { overflow-x:auto; }.entry-block .picker-row { min-width:540px; } }
 @media (max-width:720px) { .mahjong-tile.sprite { width:46px; height:62px; } }
 .mahjong-tile svg { width:100%; height:100%; display:block; filter:drop-shadow(0 1px 0 #ffffff); }.mahjong-tile .man-number { font-family:serif; font-size:26px; font-weight:800; fill:#9d2825; }.mahjong-tile .man-suit { font-family:serif; font-size:20px; font-weight:800; fill:#9d2825; }.mahjong-tile .pin { stroke:#2c2c2b; stroke-width:1.2; }.mahjong-tile .pin-0 { fill:#d33c35; }.mahjong-tile .pin-1 { fill:#2d5f91; }.mahjong-tile .pin-2 { fill:#e6e1cf; }.mahjong-tile .bamboo { fill:#2e8650; stroke:#1e5634; stroke-width:1; }.mahjong-tile .bamboo-line { stroke:#e8f1dc; stroke-width:1.2; }.mahjong-tile .honor-mark { font-family:serif; font-size:30px; font-weight:800; fill:#20251f; }.mahjong-tile.suit-s svg { background:linear-gradient(#fffdf8,#f4f6ec); }.mahjong-tile.honor svg { background:#fffef9; }
+
+/* スマホで一目で読めるよう、上部を情報量の少ない見出しへ整える。 */
+.site-header { padding-block: 12px; }
+.brand { font-size: 1.45rem; line-height: 1.35; }
+.hero.compact-hero {
+  min-height: 168px;
+  padding: 26px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  background: #e3f4e8;
+  border: 1px solid #c5e1cd;
+  box-shadow: none;
+}
+.hero.compact-hero .eyebrow {
+  position: static;
+  color: #287255;
+  font-size: .9rem;
+  letter-spacing: .08em;
+  text-shadow: none;
+}
+.hero.compact-hero h1 {
+  color: #164b39;
+  font-size: clamp(2.1rem, 4.8vw, 3.5rem);
+  line-height: 1.32;
+  letter-spacing: .025em;
+  text-shadow: none;
+}
+.honba-note { margin: 0 0 8px; color: #7b5713; font-weight: 800; }
+@media (max-width:720px) {
+  .site-header { padding: 10px 20px; }
+  .brand { font-size: 1.3rem; }
+  main { width: min(100% - 24px, 1120px); margin-top: 12px; }
+  .hero.compact-hero { min-height: 154px; padding: 22px 18px; }
+  .hero.compact-hero h1 { font-size: 1.9rem; line-height: 1.34; }
+}

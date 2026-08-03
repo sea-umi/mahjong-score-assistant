@@ -126,7 +126,8 @@ function resultView() {
   if (state.result.type === 'notice') return `<h2>自動判定は準備中です</h2><p>${state.result.message}</p>`;
   const score = state.result;
   const limit = score.limitName ? `（${score.limitName}）` : '';
-  return `<h2>計算結果</h2><p class="eyebrow dark">${score.han}翻 ${score.fu}符 ${limit}</p><h3>${score.summary}</h3><p>${score.detail}</p><details><summary>符の内訳</summary><p>${score.fuBreakdown.join('／')}</p></details><button type="button" class="secondary" data-action="reset">次局を計算する</button>`;
+  const honbaNote = score.honba > 0 ? `<p class="honba-note">本場 ${score.honba}本込み</p>` : '';
+  return `<h2>計算結果</h2><p class="eyebrow dark">${score.han}翻 ${score.fu}符 ${limit}</p><h3>${score.summary}</h3>${honbaNote}<p>${score.detail}</p><details><summary>符の内訳</summary><p>${score.fuBreakdown.join('／')}</p></details><button type="button" class="secondary" data-action="reset">次局を計算する</button>`;
 }
 
 function afterCalls() {
@@ -140,7 +141,7 @@ function afterCalls() {
 }
 
 function render() {
-  app.innerHTML = `<header class="site-header"><div class="brand">🀄 麻雀点数計算アシスタント</div><p>牌を置く感覚で、点棒のやり取りを確認</p></header><main><section class="hero compact-hero"><span class="eyebrow">四人打ち・リーチ麻雀</span><h1>和了形を選択して点数を速攻確認！</h1></section>${statusPanel()}${paletteBlock()}<div class="entry-flow">${handBlock()}${callBlock()}${afterCalls()}</div><div id="form-error" class="form-error">${state.error}</div><section id="result" class="result">${resultView()}</section></main>`;
+  app.innerHTML = `<header class="site-header"><div class="brand">🀄 麻雀点数計算アシスタント</div></header><main><section class="hero compact-hero"><span class="eyebrow">四人打ち・リーチ麻雀</span><h1>和了形を選択して<br>点数を速攻確認！</h1></section>${statusPanel()}${paletteBlock()}<div class="entry-flow">${handBlock()}${callBlock()}${afterCalls()}</div><div id="form-error" class="form-error">${state.error}</div><section id="result" class="result">${resultView()}</section></main>`;
   bind();
 }
 
