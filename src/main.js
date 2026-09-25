@@ -59,30 +59,23 @@ function picker(target) {
 }
 
 function statusPanel() {
-  const situationNames = ['リーチ', 'ダブルリーチ', '一発', '嶺上開花', '槍槓', '海底摸月', '河底撈魚'];
   const honbaOptions = Array.from({ length: 11 }, (_, value) => `<option value="${value}" ${state.honba === value ? 'selected' : ''}>${value}本</option>`).join('');
   const hanOptions = Array.from({ length: 13 }, (_, index) => {
     const han = index + 1;
     const label = han === 13 ? '13翻以上（数え役満）' : `${han}翻`;
     return `<option value="${han}" ${state.manualHan === han ? 'selected' : ''}>${label}</option>`;
   }).join('');
-  const quickFields = state.scoreMode === 'quick'
-    ? `<label>合計翻数<select data-field="manualHan">${hanOptions}</select></label>`
-    : '';
   return `<aside class="context-panel">
     <h2>計算の状況</h2>
     <div class="two-col">
-      <label>計算方法<select data-field="scoreMode"><option value="quick" ${state.scoreMode === 'quick' ? 'selected' : ''}>翻数を自分で入力</option><option value="auto" ${state.scoreMode === 'auto' ? 'selected' : ''}>役・翻数を自動判定</option></select></label>
       <label>和了<select data-field="winMethod"><option value="ron" ${state.winMethod === 'ron' ? 'selected' : ''}>ロン</option><option value="tsumo" ${state.winMethod === 'tsumo' ? 'selected' : ''}>ツモ</option></select></label>
       <label>立場<select data-field="isDealer"><option value="false" ${!state.isDealer ? 'selected' : ''}>子</option><option value="true" ${state.isDealer ? 'selected' : ''}>親</option></select></label>
       <label>本場<select data-field="honba">${honbaOptions}</select></label>
       <label>場風<select data-field="roundWind">${[['east', '東場'], ['south', '南場'], ['west', '西場'], ['north', '北場']].map(([value, label]) => `<option value="${value}" ${state.roundWind === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
       <label>自風<select data-field="seatWind">${[['east', '東家'], ['south', '南家'], ['west', '西家'], ['north', '北家']].map(([value, label]) => `<option value="${value}" ${state.seatWind === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
-      ${quickFields}
+      <label>合計翻数<select data-field="manualHan">${hanOptions}</select></label>
     </div>
-    ${state.scoreMode === 'quick'
-      ? '<p class="guide">合計翻数には、成立役・ドラ・赤ドラ・裏ドラ（リーチ時のみ）をすべて含めた最終合計を入力します。状況役はこの合計に追加されないため、入力欄は表示しません。符は手牌・副露・和了牌から自動計算します。</p>'
-      : `<p class="guide">自動役判定では、下の状況役も翻数へ自動加算します。</p><fieldset class="checks"><legend>状況役</legend>${situationNames.map((name) => `<label><input data-situation="${name}" type="checkbox" ${state.situations.has(name) ? 'checked' : ''}>${name}</label>`).join('')}</fieldset>`}
+    <p class="guide">合計翻数には、成立役・ドラ・赤ドラ・裏ドラ（リーチ時のみ）をすべて含めた最終合計を選びます。符は手牌・副露・和了牌から自動計算します。</p>
   </aside>`;
 }
 
@@ -135,9 +128,8 @@ function afterCalls() {
   const callIndices = state.calls.flatMap((call) => call.indices);
   const available = state.tiles.map((tile, index) => ({ tile, index })).filter(({ index }) => !callIndices.includes(index));
   const win = `<section class="entry-block win-block"><div class="block-title"><div><h2>3. 和了牌</h2><p>副露ではない牌から、和了した1枚を選びます。</p></div></div><div class="selected-area available">${available.map(({ tile, index }) => `<button type="button" class="available-tile ${state.winTile === index ? 'chosen' : ''}" data-action="win" data-index="${index}">${face(tile)}</button>`).join('')}</div><div class="selected-area compact-list">${state.winTile === '' ? '<p class="muted">未選択です</p>' : selected([state.tiles[state.winTile]], 'remove-win')}</div><button type="button" class="primary" data-action="calculate">点数を計算する</button></section>`;
-  // 手入力ではドラ分も合計翻数に含めるため、ドラ表示牌の入力を省略する。
-  if (state.scoreMode === 'quick') return win;
-  return `<div class="indicator-row">${indicatorCard('dora', 'ドラ表示牌', '最大5枚まで選択')}${indicatorCard('ura', '裏ドラ表示牌', 'リーチ時のみ翻数へ加算')}</div>${state.doraConfirmed && state.uraConfirmed ? win : ''}`;
+  // 現在は合計翻数を選択する計算方式のみ公開する。
+  return win;
 }
 
 function render() {
